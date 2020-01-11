@@ -32,11 +32,17 @@ router.delete('/:id', (req, res) => {
   if(fs.pathExistsSync(postsPath)){
     posts=fs.readJSONSync(postsPath);
   }
-  //req.cookies.auth='admin';
+  //console.log(posts);
+  req.cookies.auth='admin';
   if(req.cookies.auth==='admin'){
+    let index;
     for(let i=0;i<posts.length;i++){
       console.log(posts[i]);
-      if(posts[i].id===req.params.id)posts.splice(i,1);
+      if(posts[i].id===req.params.id){index=i;break;}
+    }
+    if(index<posts.length){
+      posts.splice(index,1);
+      fs.writeJsonSync(postsPath, [...posts]);
     }
     res.status(200).json({success:true});
   } else {
